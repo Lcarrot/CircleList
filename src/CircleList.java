@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class CircleList {
@@ -15,11 +16,19 @@ public class CircleList {
             Scanner sc = new Scanner(reader);
             int i = 0;
             while (sc.hasNextLine()) {
-                names[i] = sc.next();
-                sex[i] = sc.nextLine().trim().equals("man");
+                names[i] = sc.next().trim();
+                if ("man".equals(sc.next().trim())) sex[i] = true;
+                else {
+                    sex[i] = false;
+                }
             }
+            reader.close();
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+
 }
