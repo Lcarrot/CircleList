@@ -17,7 +17,7 @@ public class CircleList {
             int i = 0;
             while (sc.hasNextLine()) {
                 names[i] = sc.next().trim();
-                if ("man".equals(sc.next().trim())) sex[i] = true;
+                if ("man".equals(sc.nextLine().trim())) sex[i] = true;
                 else {
                     sex[i] = false;
                 }
