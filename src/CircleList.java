@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class CircleList {
 
-    private LinkedList<Participant> participants;
+    LinkedList<Participant> participants;
 
     private class Participant {
 
@@ -20,12 +20,11 @@ public class CircleList {
     }
 
     public CircleList(String filename) {
-        participants = null;
         try {
             FileReader reader = new FileReader(filename);
             Scanner sc = new Scanner(reader);
             while (sc.hasNextLine()) {
-                participants.add(new Participant(sc.next(), sc.next().trim().equals("man")));
+                participants.add(new Participant(sc.next(), sc.next().equalsIgnoreCase("man")));
             }
             reader.close();
         } catch (FileNotFoundException e) {
@@ -34,4 +33,27 @@ public class CircleList {
             e.printStackTrace();
         }
     }
+
+    public void show() {
+        for (Participant participant: participants) {
+            System.out.print(participant + ", ");
+        }
+    }
+
+    public void insert(Participant participant) {
+        participants.add(participant);
+    }
+
+    public void delete(String name) {
+        int i = 0;
+        for (Participant p: participants) {
+            if (p.name.equals(name)) {
+                participants.remove(i);
+                break;
+            }
+            i++;
+        }
+    }
+
+
 }
