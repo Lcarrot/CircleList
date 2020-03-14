@@ -1,12 +1,12 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CircleList {
 
-    LinkedList<Participant> participants;
+    ArrayList<Participant> participants;
 
     private class Participant {
 
@@ -19,7 +19,7 @@ public class CircleList {
         }
     }
 
-    public CircleList(String filename) {
+    public CircleList(String filename) throws IOException {
         try {
             FileReader reader = new FileReader(filename);
             Scanner sc = new Scanner(reader);
@@ -29,9 +29,11 @@ public class CircleList {
             reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+
+    private CircleList(ArrayList<Participant> participants) {
+        this.participants = participants;
     }
 
     public void show() {
@@ -55,5 +57,31 @@ public class CircleList {
         }
     }
 
+    public void sort(String name) {
+        int start = participants.indexOf(name);
+        {
+            //нужно спросить как сортировать, через компаратор или тот же список, но где первый это indexOf
+        }
+    }
 
+    public void last(int k) {
+
+    }
+
+    public CircleList[] gender() {
+        CircleList[] people = new CircleList[2];
+        ArrayList men = new ArrayList<>();
+        ArrayList<Participant> women = new ArrayList<>();
+        for (Participant participant : participants) {
+            if (participant.sex) {
+                men.add(participant);
+            }
+            else {
+                women.add(participant);
+            }
+        }
+        people[0] = new CircleList(men);
+        people[1] = new CircleList(women);
+        return people;
+    }
 }
