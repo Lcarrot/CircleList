@@ -1,11 +1,9 @@
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class CircleList {
 
-    private Participant head;
     private Participant last;
     private int size;
 
@@ -21,23 +19,22 @@ public class CircleList {
         }
     }
 
-    public CircleList(Participant head, Participant last, int size) {
-        this.head = head;
+    public CircleList(Participant last, int size) {
         this.last = last;
         this.size = size;
     }
 
-    public CircleList(String filename) throws IOException {
+    public CircleList(String filename) {
         try {
             FileReader reader = new FileReader(filename);
             Scanner sc = new Scanner(reader);
             size = 0;
+            Participant head = null;
             Participant participant;
             while (sc.hasNextLine()) {
                 participant = (new Participant(sc.next(), sc.next().equalsIgnoreCase("man")));
                 if (size == 0) {
                     head = participant;
-                    size++;
                 }
                 last = participant;
                 participant = participant.next;
@@ -46,13 +43,13 @@ public class CircleList {
             assert last != null;
             last.next = head;
             reader.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void show() {
-        Participant participant = head;
+        Participant participant = last.next;
         for (int i = 0; i < size; i++) {
             System.out.print(participant + ", ");
             participant = participant.next;
@@ -60,22 +57,20 @@ public class CircleList {
     }
 
     public void insert(Participant participant) {
-        if (head == null) {
-            head = participant;
+        if (last == null) {
             last = participant;
         }
+        participant.next = last.next;
         last.next = participant;
         last = participant;
-        last.next = head;
     }
 
     public void delete(String name) {
-        Participant participant = head;
+        Participant participant = last.next;
         boolean flag = true;
-        if (head.name.equals(name)) {
+        if (last.next.name.equals(name)) {
             flag = false;
-            last.next = head.next;
-            head = head.next;
+            last.next = last.next.next;
         }
         for (int i = 0; i < size && flag; i++) {
             if (participant.next.name.equals(name)) {
@@ -85,18 +80,36 @@ public class CircleList {
     }
 
     public void sort(String name) {
-        // TODO: 16.03.2020
+        Participant p = last;
+        for (int i = 0; i < size; i++) {
+            if (p.next.name.equals(name)) {
+                last = p;
+                break;
+            }
+            p = p.next;
+        }
     }
 
     public void last(int k) {
-        // TODO: 16.03.2020
+        Participant p = last;
+        if (size > 0) {
+            int n = size;
+            while (n > 1) {
+                int s = (n % k) - 1;
+                for (int i = 0; i < s; i++) {
+                   p = p.next;
+                }
+                p.next = p.next.next;
+                n--;
+            }
+        }
     }
 
     public CircleList[] gender() {
-        Participant p = head;
+        Participant p = last.next;
         Participant[] people = new Participant[]{new Participant(null, true), new Participant(null, false)};
-        Participant[] first  = new Participant[]{new Participant(null, true), new Participant(null, false)};
-        Participant[] last   = new Participant[]{new Participant(null, true), new Participant(null, false)};
+        Participant[] lasts = new Participant[]{new Participant(null, true), new Participant(null, false)};
+        Participant[] firsts = new Participant[]{new Participant(null, true), new Participant(null, false)};
         int[] size = new int[]{0, 0};
         int sex;
         for (int i = 0; i < this.size; i++) {
@@ -106,17 +119,21 @@ public class CircleList {
                 sex = 1;
             }
             if (people[sex].name == null) {
-                first[sex].name = p.name;
-                people[sex] = first[sex];
-                last[sex] = first[sex];
+                firsts[sex].name = p.name;
+                lasts[sex].name = p.name;
                 size[sex]++;
-            } else {
+            } else if (size[sex] == 1) {
+                firsts[sex].next = p;
+            }
+            else {
                 people[sex].next.name = p.name;
                 people[sex].next.sex = p.sex;
                 people[sex] = people[sex].next;
-                last[sex] = people[sex];
+                lasts[sex] = people[sex];
             }
         }
-        return new CircleList[]{new CircleList(first[0],last[0],size[0]), new CircleList(first[1],last[1],size[1])};
+        lasts[0].next = firsts[0];
+        lasts[1].next = firsts[1];
+        return new CircleList[]{new CircleList(lasts[0], size[0]), new CircleList(lasts[1], size[1])};
     }
 }
