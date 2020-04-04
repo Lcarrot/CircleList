@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 public class CircleList {
+    //arar
 
     private String[] names;
     private boolean[] sex;
